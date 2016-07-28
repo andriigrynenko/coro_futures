@@ -62,5 +62,7 @@ int main() {
 	std::cout << "main(): done awaiting test()" << std::endl;
 	printThreadID();
 
+	executor.join();
+
 	return 0;
 }
