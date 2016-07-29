@@ -45,7 +45,7 @@ int main() {
 
 	std::cout << "main(): spawning test()" << std::endl;
 	printThreadID();
-	auto future = spawn(executor, 1024, test, baton.get_future());
+	auto future = spawnWithStack(executor, 1024, test, baton.get_future());
 
 	std::this_thread::sleep_for(std::chrono::milliseconds{ 100 });
 

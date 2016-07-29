@@ -110,7 +110,7 @@ private:
  * Start coroutine on a given executor, using fixed size stack allocator.
  */
 template <typename F, typename... Args>
-auto spawn(Executor& executor, size_t stackSize, F&& f, Args&&... args) {
+auto spawnWithStack(Executor& executor, size_t stackSize, F&& f, Args&&... args) {
 	ExecutionContext ec;
 	ec.executor = &executor;
 	ec.allocator = StackAllocator::create(stackSize);
@@ -122,12 +122,13 @@ auto spawn(Executor& executor, size_t stackSize, F&& f, Args&&... args) {
 /*
  * Start coroutine on a given executor. Malloc allocator is used.
  */
-template <typename T>
-auto spawn(Executor& executor, Task<T>&& task) {
+template <typename F, typename... Args>
+auto spawn(Executor& executor, F&& f, Args&&... args) {
 	ExecutionContext ec;
 	ec.executor = &executor;
-	auto future = task.start(ec);
-	return std::move(future);
+	auto task = f(ec, std::forward<Args>(args)...);
+	auto future = std::move(task).start(ec);
+	return future;
 }
 
 /*
