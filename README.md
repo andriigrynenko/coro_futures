@@ -83,7 +83,7 @@ You may have coroutines call and wait for other coroutines.
       co_return result;
     }
 
-`call()' doesn't start or even create a coroutine. Coroutine is only created and started when someone `co_await`s its return value.
+`call()` doesn't start or even create a coroutine. Coroutine is only created and started when someone `co_await`s its return value.
 
 Having such explicit call syntax for calling and waiting allows us having all these coroutines use the same stack allocator. The following code starts `myCoroutine2` and tells it to use pre-allocated stack allocator of fixed size (1024 bytes) for itself and all coroutines it calls into.     
 
