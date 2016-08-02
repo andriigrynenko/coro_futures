@@ -93,11 +93,11 @@ We used simple stack allocator for our examples, but it could be extended to a s
 
 # How can we make it better ? 
 
-### ExecutorContext
-Having all coroutines accept `ExecutorContext` as their first argument is something we would want to avoid but its currently necessary to pass allocators between coroutines. If we dropped allocator support from the framework, we wouldn't need it. 
+### AllocatorPtr
+Having all coroutines accept `AllocatorPtr` as their first argument is something we would want to avoid but its currently necessary to pass allocators between coroutines. If we dropped allocator support from the framework, we wouldn't need it. 
 
 ### call() function
-Same as `ExecutorContext` argument, we only need `call()` to support custom allocator. 
+Same as `AllocatorPtr` argument, we only need `call()` to support custom allocator. 
 
 ### Undefined behavior if co_return is missing
 We think it could be very confusing for developers that flowing of the end of coroutine without calling co_return is undefined behavior (8.4.4, 4). We would much rather have it be a compilation error (which could be enabled only for some promise types via a trait or something).

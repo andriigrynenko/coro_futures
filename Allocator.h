@@ -6,3 +6,5 @@ public:
 	virtual void deallocate(void* buffer, size_t size) = 0;
 	virtual ~Allocator() {}
 };
+
+using AllocatorPtr = Allocator*;

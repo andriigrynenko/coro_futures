@@ -13,7 +13,7 @@ void printThreadID() {
 	std::cout << "Current thread ID = " << std::this_thread::get_id() << std::endl;
 }
 
-Task<int> test2(ExecutionContext, std::future<void> baton) {
+Task<int> test2(AllocatorPtr, std::future<void> baton) {
 	std::cout << "test2()" << std::endl;
 	printThreadID();
 
@@ -25,7 +25,7 @@ Task<int> test2(ExecutionContext, std::future<void> baton) {
 	co_return 24;
 }
 
-Task<int> test(ExecutionContext, std::future<void> baton) {
+Task<int> test(AllocatorPtr, std::future<void> baton) {
 	std::cout << "test()" << std::endl;
 	printThreadID();
 

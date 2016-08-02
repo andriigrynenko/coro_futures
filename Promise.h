@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Allocator.h"
 #include "AwaitWrapper.h"
 #include "ExecutionContext.h"
 #include "Task.h"
@@ -25,22 +26,22 @@ public:
 	using State = PromiseState;
 
 	template <typename... Args>
-	void* operator new(size_t size, ExecutionContext ec, Args&&...) {
+	void* operator new(size_t size, AllocatorPtr allocator, Args&&...) {
 		size += sizeof(Allocator*);
 		Allocator** ptr;
-		if (ec.allocator) {
-			ptr = static_cast<Allocator**>(ec.allocator->allocate(size));
+		if (allocator) {
+			ptr = static_cast<Allocator**>(allocator->allocate(size));
 		}
 		else {
 			ptr = static_cast<Allocator**>(malloc(size));
 		}
-		*ptr = ec.allocator;
+		*ptr = allocator;
 		return ptr + 1;
 	}
 
 	template <typename... Args>
 	void* operator new(size_t size, Args&&...) {
-		static_assert(false, "ExecutionContext should be the first argument for every Task<T>.");
+		static_assert(false, "AllocatorPtr should be the first argument for every Task<T>.");
 	}
 
 	void operator delete(void* ptr, size_t size) {
@@ -71,7 +72,7 @@ public:
 
 	template <typename... Args>
 	auto await_transform(CallableTask<Args...>&& CallableTask) {
-		auto task = CallableTask.init(executionContext_);
+		auto task = CallableTask.init(executionContext_.allocator);
 		auto future = std::move(task).startInline(executionContext_);
 		return future;
 	}

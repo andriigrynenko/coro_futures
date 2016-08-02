@@ -59,15 +59,15 @@ public:
 	CallableTask(F&& f, Args&&... args) :
 		f_(BindRef()(std::forward<F>(f), std::forward<Args>(args)...)) {}
 
-	auto init(ExecutionContext ec) {
-		return f_(ec);
+	auto init(AllocatorPtr allocator) {
+		return f_(allocator);
 	}
 
 private:
 	struct BindRef {
 		auto operator()(F&& f, Args&&... args) {
-			return [&](ExecutionContext ec) mutable {
-				return f(ec, std::forward<Args>(args)...);
+			return [&](AllocatorPtr allocator) mutable {
+				return f(allocator, std::forward<Args>(args)...);
 			};
 		}
 	};

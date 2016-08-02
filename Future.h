@@ -114,7 +114,7 @@ auto spawnWithStack(Executor& executor, size_t stackSize, F&& f, Args&&... args)
 	ExecutionContext ec;
 	ec.executor = &executor;
 	ec.allocator = StackAllocator::create(stackSize);
-	auto task = f(ec, std::forward<Args>(args)...);
+	auto task = f(ec.allocator, std::forward<Args>(args)...);
 	auto future = std::move(task).start(ec);
 	return future;
 }
@@ -126,7 +126,7 @@ template <typename F, typename... Args>
 auto spawn(Executor& executor, F&& f, Args&&... args) {
 	ExecutionContext ec;
 	ec.executor = &executor;
-	auto task = f(ec, std::forward<Args>(args)...);
+	auto task = f(nullptr, std::forward<Args>(args)...);
 	auto future = std::move(task).start(ec);
 	return future;
 }
