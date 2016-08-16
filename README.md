@@ -99,6 +99,8 @@ Having all coroutines accept `AllocatorPtr` as their first argument is something
 ### call() function
 Same as `AllocatorPtr` argument, we only need `call()` to support custom allocator. 
 
+Another reason to have some kind of `call()` or `spawn()` function, which controls coroutine creation is to properly capture coroutine arguments (TODO: add this to the implementation). E.g. if a coroutine function accepts some arguments by constant reference, but we want that coroutine to be started on a detached Executor, that argument has to be captured by value.
+
 ### Undefined behavior if co_return is missing
 We think it could be very confusing for developers that flowing of the end of coroutine without calling co_return is undefined behavior (8.4.4, 4). We would much rather have it be a compilation error (which could be enabled only for some promise types via a trait or something).
 

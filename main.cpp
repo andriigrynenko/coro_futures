@@ -25,9 +25,11 @@ Task<int> test2(AllocatorPtr, std::future<void> baton) {
 	co_return 24;
 }
 
-Task<int> test(AllocatorPtr, std::future<void> baton) {
+Task<int> test(AllocatorPtr, std::future<void> baton, const int& x) {
 	std::cout << "test()" << std::endl;
 	printThreadID();
+
+	std::cout << "passed by const&, should be 42 = " << x << std::endl;
 
 	auto value = co_await call(test2, std::move(baton));
 	assert(value == 24);
@@ -45,7 +47,10 @@ int main() {
 
 	std::cout << "main(): spawning test()" << std::endl;
 	printThreadID();
-	auto future = spawnWithStack(executor, 1024, test, baton.get_future());
+	auto future = [&]() {
+		int x = 42;
+		return spawnWithStack(executor, 1024, test, baton.get_future(), x);
+	}();
 
 	std::this_thread::sleep_for(std::chrono::milliseconds{ 100 });
 
